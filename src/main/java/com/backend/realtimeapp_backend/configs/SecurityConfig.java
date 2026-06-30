@@ -2,8 +2,10 @@ package com.backend.realtimeapp_backend.configs;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
 public class SecurityConfig {
@@ -13,4 +15,24 @@ public class SecurityConfig {
         return PasswordEncoderFactories.createDelegatingPasswordEncoder();
     }
 
+    @Bean
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+
+        return http
+
+                // Disable CSRF for Postman testing
+                .csrf(csrf -> csrf.disable())
+
+                // Authorization Rules
+                .authorizeHttpRequests(auth -> auth
+
+                        // Allow all Product APIs without login
+                        .requestMatchers("/api/auth/**").permitAll()
+
+                        // Any other endpoint requires authentication
+                        .anyRequest().authenticated()
+                )
+
+                .build();
+    }
 }
