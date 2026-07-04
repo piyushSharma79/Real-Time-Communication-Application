@@ -20,9 +20,11 @@ public class UserServiceImpl implements UserService{
 
     private final PasswordEncoder passwordEncoder;
     private final UserRepository userRepository;
-    public UserServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+    private final JwtService jwtService;
+    public UserServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder, JwtService jwtService) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
+        this.jwtService = jwtService;
     }
 
 
@@ -57,7 +59,11 @@ public class UserServiceImpl implements UserService{
                     throw new InvalidCredentialsException("Invalid Email or Password");
                 }
                 LoginResponse response = new LoginResponse();
-                response.setToken("");
+                String token = jwtService.generateToken(
+                        user.getEmail(),
+                        user.getRole()
+                );
+                response.setToken(token);
                 response.setName(user.getName());
                 response.setMessage("Login successfully");
                 response.setRole(user.getRole());

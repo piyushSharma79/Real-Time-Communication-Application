@@ -40,6 +40,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         }
         String jwt = authHeader.substring(7);
 
+        System.out.println("JWT Filter Executed");
         String email;
         try{
             email = jwtService.extractEmail(jwt);
@@ -47,6 +48,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             return;
         }
+        System.out.println(email);
         if(email != null && SecurityContextHolder.getContext().getAuthentication() == null){
             User user = userRepository.findByEmail(email)
                     .orElse(null);

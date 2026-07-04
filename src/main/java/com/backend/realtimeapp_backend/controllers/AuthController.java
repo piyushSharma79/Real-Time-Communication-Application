@@ -1,5 +1,7 @@
 package com.backend.realtimeapp_backend.controllers;
 
+import com.backend.realtimeapp_backend.dtos.LoginRequest;
+import com.backend.realtimeapp_backend.dtos.LoginResponse;
 import com.backend.realtimeapp_backend.dtos.RegisterRequest;
 import com.backend.realtimeapp_backend.dtos.RegisterResponse;
 import com.backend.realtimeapp_backend.services.UserService;
@@ -18,5 +20,10 @@ public class AuthController {
     @PostMapping("/register")
     public RegisterResponse register(@Valid @RequestBody RegisterRequest request){
         return userService.register(request);
+    }
+
+    @PostMapping("/login")
+    public LoginResponse login(@Valid @RequestBody LoginRequest request){
+        return userService.login(request);
     }
 }
