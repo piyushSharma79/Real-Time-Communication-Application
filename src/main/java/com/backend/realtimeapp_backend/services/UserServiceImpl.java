@@ -1,9 +1,6 @@
 package com.backend.realtimeapp_backend.services;
 
-import com.backend.realtimeapp_backend.dtos.LoginRequest;
-import com.backend.realtimeapp_backend.dtos.LoginResponse;
-import com.backend.realtimeapp_backend.dtos.RegisterRequest;
-import com.backend.realtimeapp_backend.dtos.RegisterResponse;
+import com.backend.realtimeapp_backend.dtos.*;
 import com.backend.realtimeapp_backend.entities.Role;
 import com.backend.realtimeapp_backend.entities.User;
 import com.backend.realtimeapp_backend.exceptions.InvalidCredentialsException;
@@ -21,10 +18,12 @@ public class UserServiceImpl implements UserService{
     private final PasswordEncoder passwordEncoder;
     private final UserRepository userRepository;
     private final JwtService jwtService;
-    public UserServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder, JwtService jwtService) {
+    private final CurrentUserService currentUserService;
+    public UserServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder, JwtService jwtService, CurrentUserService currentUserService) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.jwtService = jwtService;
+        this.currentUserService = currentUserService;
     }
 
 
@@ -33,7 +32,6 @@ public class UserServiceImpl implements UserService{
         User user = new User();
         if(userRepository.existsByEmail(request.getEmail())){
             throw new UserAlreadyExistsException("user already exists");
-
         }
         user.setEmail(request.getEmail());
         user.setName(request.getName());
@@ -67,6 +65,18 @@ public class UserServiceImpl implements UserService{
                 response.setName(user.getName());
                 response.setMessage("Login successfully");
                 response.setRole(user.getRole());
+        return response;
+    }
+    @Override
+    public UserProfileResponse getMyProfile() {
+
+        User user = currentUserService.getCurrentUser();
+        UserProfileResponse response = new UserProfileResponse();
+        response.setName(user.getName());
+        response.setId(user.getId());
+        response.setEmail(user.getEmail());
+        response.setRole(user.getRole());
+        response.setCreatedAt(user.getCreatedAt());
         return response;
     }
 }
