@@ -7,6 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+
 @Service
 public class MessageServiceImpl implements MessageService{
 
@@ -22,7 +24,15 @@ public class MessageServiceImpl implements MessageService{
     public ChatMessageResponse sendMessage(ChatMessageRequest request) {
 
         User sender = currentUserService.getCurrentUser();
+        ChatMessageResponse response = new ChatMessageResponse();
+        response.setMessage(request.getMessage());
+        response.setSenderName(sender.getName());
+        response.setChatRoomId(request.getChatRoomId());
+        response.setCreatedAt(LocalDateTime.now());
+        String destination = "/topic/chat/" + request.getChatRoomId();
 
-        return null;
+        messagingTemplate.convertAndSend(destination, response);
+
+        return response;
     }
 }

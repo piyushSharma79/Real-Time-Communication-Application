@@ -13,7 +13,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) { //registry generally store registrations
         registry.addEndpoint("/ws")
-                .setAllowedOriginPatterns("http://loclhost:8080") //allowed request from url
+                .setAllowedOriginPatterns("http://loclhost:5173") //allowed request from url
                 .withSockJS(); //enable socket support -> another technique to keep real-time communication working when websocket is unavailable
     }
 
